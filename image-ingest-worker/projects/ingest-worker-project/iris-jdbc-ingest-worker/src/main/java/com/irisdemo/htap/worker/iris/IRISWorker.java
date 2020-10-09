@@ -158,7 +158,7 @@ public class IRISWorker implements IWorker
 			
 			try {
 				workerDBUtils.createTable(connection);
-			} catch (SQLException ex)
+			} catch (Exception ex)
 			{
 				logger.info("Error occured - assuming i he table exists "+ex.getMessage());
 			}
