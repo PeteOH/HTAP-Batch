@@ -160,7 +160,7 @@ public class IRISWorker implements IWorker
 				workerDBUtils.createTable(connection);
 			} catch (SQLException ex)
 			{
-				logger.info("Error occured - assuming i he table exists "+ex.getMessage())
+				logger.info("Error occured - assuming i he table exists "+ex.getMessage());
 			}
 			
 			if (config.getDisableJournalForDropTable())
