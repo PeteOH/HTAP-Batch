@@ -124,20 +124,20 @@ public class IRISWorker implements IWorker
 		
 		try
 		{
-			workerDBUtils.createIRISDisableJournalProc(connection);
-			workerDBUtils.createIRISExpandDatabaseProc(connection);
+			//POH workerDBUtils.createIRISDisableJournalProc(connection);
+			//POH workerDBUtils.createIRISExpandDatabaseProc(connection);
 			
-			WorkerDBUtils.expandDatabase(connection, config.getDatabaseSizeInGB());
+			//POH WorkerDBUtils.expandDatabase(connection, config.getDatabaseSizeInGB());
 
 			if (config.getDisableJournalForDropTable())
 			{
 				//IRIS Specific: Temporarily Disable journal for a possible DROP TABLE of millions of records.
-				WorkerDBUtils.disableJournalForConnection(connection, true);
+				//POH WorkerDBUtils.disableJournalForConnection(connection, true);
 			}
 
 			try
 			{
-				workerDBUtils.dropTable(connection);
+				//POH workerDBUtils.dropTable(connection);
 			}
 			catch (SQLException exception)
 			{
@@ -156,12 +156,17 @@ public class IRISWorker implements IWorker
 				
 			}
 			
-			workerDBUtils.createTable(connection);
+			try {
+				workerDBUtils.createTable(connection);
+			} catch (SQLException ex)
+			{
+				logger.info("Error occured - assuming i he table exists "+ex.getMessage())
+			}
 			
 			if (config.getDisableJournalForDropTable())
 			{
 				// Turning journal back on
-				WorkerDBUtils.disableJournalForConnection(connection, false);
+				//POH WorkerDBUtils.disableJournalForConnection(connection, false);
 			}
 
 		}

@@ -19,7 +19,7 @@ services:
     ports:
     - "10000:4200" # Where Node Will be listening
 
-  htapirisdb: 
+#  htapirisdb: 
     # We can't use clean IRIS Community because its HEALTHCHECK period is too long.
     # So we are going to use our irisdemo-base-db image.
     #image: store/intersystems/iris-community:2019.3.0.309.0
@@ -28,19 +28,19 @@ services:
     # version-1.5.1 is based on IRIS Community 2020.1.0.197.0
     # version-1.5.2 is based on IRIS Community 2020.2.0.196.0
     # version-1.7.0 is based on IRIS Community 2020.3.0.200.0
-    image: intersystemsdc/irisdemo-base-irisdb-community:version-1.7.0
-    hostname: htapirisdb
-    init: true
-    container_name: htapirisdb
-    ports:
-    - "10001:52773" # 52773 is the webserver/management portal port: http://localhost:9092/csp/sys/UtilHome.csp
+#    image: intersystemsdc/irisdemo-base-irisdb-community:version-1.7.0
+#    hostname: htapirisdb
+#    init: true
+#    container_name: htapirisdb
+#    ports:
+#    - "10001:52773" # 52773 is the webserver/management portal port: http://localhost:9092/csp/sys/UtilHome.csp
 
   # Versions prior to 2020.3.0.200.0 would use the following JDBC URL with port 51773:
   # jdbc:IRIS://htapirisdb:51773/USER
   # With IRIS 2020.3.0.200.0, the port has changed to 1972
   htapmaster:
-    depends_on: 
-      - htapirisdb
+#    depends_on: 
+#      - htapirisdb
     container_name: htapmaster
     hostname: htapmaster
     init: true
@@ -54,10 +54,10 @@ services:
       - DISABLE_JOURNAL_FOR_TRUNCATE_TABLE=true
       - INGESTION_THREADS_PER_WORKER=2
       - INGESTION_BATCH_SIZE=1000
-      - INGESTION_JDBC_URL=jdbc:IRIS://htapirisdb:1972/USER
+      - INGESTION_JDBC_URL=jdbc:IRIS://POC-UOB-NLB-133f07567d36f68d.elb.ap-southeast-1.amazonaws.com:51773/IRISCLUSTER
       - INGESTION_JDBC_USERNAME=SuperUser
       - INGESTION_JDBC_PASSWORD=sys
-      - CONSUMER_JDBC_URL=jdbc:IRIS://htapirisdb:1972/USER
+      - CONSUMER_JDBC_URL=jdbc:IRIS://POC-UOB-NLB-133f07567d36f68d.elb.ap-southeast-1.amazonaws.com:51773/IRISCLUSTER
       - CONSUMER_JDBC_USERNAME=SuperUser
       - CONSUMER_JDBC_PASSWORD=sys
       - CONSUMER_THREADS_PER_WORKER=1
