@@ -129,7 +129,6 @@ public class IRISWorker implements IWorker
 			
 			//POH WorkerDBUtils.expandDatabase(connection, config.getDatabaseSizeInGB());
 
-/*POH
  			if (config.getDisableJournalForDropTable())
 			{
 				//IRIS Specific: Temporarily Disable journal for a possible DROP TABLE of millions of records.
@@ -139,6 +138,7 @@ public class IRISWorker implements IWorker
 			try
 			{
 				//POH workerDBUtils.dropTable(connection);
+				workerDBUtils.truncateTable(connection);
 			}
 			catch (SQLException exception)
 			{
@@ -156,7 +156,7 @@ public class IRISWorker implements IWorker
 				}
 				
 			}
- */			
+
 			try {
 				workerDBUtils.createTable(connection);
 			} catch (SQLException ex)
