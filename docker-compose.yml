@@ -58,8 +58,8 @@ services:
       #AM- INGESTION_JDBC_URL=jdbc:IRIS://POC-AM-UOB-85491352.ap-southeast-1.elb.amazonaws.com:51773/IRISCLUSTER
       - INGESTION_JDBC_USERNAME=SuperUser
       - INGESTION_JDBC_PASSWORD=sys
-      #DM- CONSUMER_JDBC_URL=jdbc:IRIS://POC-UOB-NLB-21628afbd58770c9.elb.ap-southeast-1.amazonaws.com:51773/IRISCLUSTER
-      - CONSUMER_JDBC_URL=jdbc:IRIS://POC-AM-UOB-85491352.ap-southeast-1.elb.amazonaws.com:51773/IRISCLUSTER
+      - CONSUMER_JDBC_URL=jdbc:IRIS://POC-UOB-NLB-21628afbd58770c9.elb.ap-southeast-1.amazonaws.com:51773/IRISCLUSTER
+      #AM- CONSUMER_JDBC_URL=jdbc:IRIS://POC-AM-UOB-85491352.ap-southeast-1.elb.amazonaws.com:51773/IRISCLUSTER
       - CONSUMER_JDBC_USERNAME=SuperUser
       - CONSUMER_JDBC_PASSWORD=sys
       - CONSUMER_THREADS_PER_WORKER=4
@@ -92,18 +92,18 @@ services:
       - MASTER_HOSTNAME=htapmaster
       - MASTER_PORT=8080
   
-  # ingest-worker2:
-  #   depends_on: 
-  #     - htapmaster
-  #   container_name: ingest-worker2
-  #   hostname: ingest-worker2
-  #   init: true
-  #   image: intersystemsdc/irisdemo-demo-htap:iris-jdbc-ingest-worker-version-2.5.0
-  #   ports:
-  #     - "10005:8080" # Where Springboot Will be listening
-  #   environment:
-  #     - MASTER_HOSTNAME=htapmaster
-  #     - MASTER_PORT=8080
+  ingest-worker2:
+     depends_on: 
+       - htapmaster
+     container_name: ingest-worker2
+     hostname: ingest-worker2
+     init: true
+     image: intersystemsdc/irisdemo-demo-htap:iris-jdbc-ingest-worker-version-2.5.0
+     ports:
+       - "10005:8080" # Where Springboot Will be listening
+     environment:
+       - MASTER_HOSTNAME=htapmaster
+       - MASTER_PORT=8080
 
   # query-worker2:
   #   depends_on: 
