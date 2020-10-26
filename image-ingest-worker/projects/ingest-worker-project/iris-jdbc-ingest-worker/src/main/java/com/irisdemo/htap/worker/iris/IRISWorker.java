@@ -108,6 +108,7 @@ public class IRISWorker implements IWorker
 		} 
     	finally
     	{
+			connection.rollback();
     		connection.close();
     	}
 		
