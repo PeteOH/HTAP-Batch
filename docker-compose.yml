@@ -10,12 +10,12 @@
 version: '3.7'
 
 services:
-  htapui:
+  htapui-batch:
     depends_on:
-      - htapmaster
-    container_name: htapui
+      - htapmaster-batch
+    container_name: htapui-batch
     hostname: htapui
-    image: intersystemsdc/irisdemo-demo-htap-batch:ui-version-2.5.0
+    image: intersystemsdc/irisdemo-demo-htap-batch:ui-version-2.5.2
     ports:
     - "10000:4200" # Where Node Will be listening
 
@@ -33,74 +33,75 @@ services:
 #    init: true
 #    container_name: htapirisdb
 #    ports:
-#    - "10001:52773" # 52773 is the webserver/management portal port: http://localhost:9092/csp/sys/UtilHome.csp
+#   - "10001:52773" # 52773 is the webserver/management portal port: http://localhost:9092/csp/sys/UtilHome.csp
 
   # Versions prior to 2020.3.0.200.0 would use the following JDBC URL with port 51773:
   # jdbc:IRIS://htapirisdb:51773/USER
   # With IRIS 2020.3.0.200.0, the port has changed to 1972
-  htapmaster:
-#    depends_on: 
-#      - htapirisdb
-    container_name: htapmaster
+  htapmaster-batch:
+    #depends_on: 
+    #  - htapirisdb
+    container_name: htapmaster-batch
     hostname: htapmaster
     init: true
-    image: intersystemsdc/irisdemo-demo-htap-batch:master-version-2.5.0
+    image: intersystemsdc/irisdemo-demo-htap-batch:master-version-2.5.2
     ports:
       - "10002:8080" # Where Springboot Will be listening
     environment:
-      - MASTER_SPEEDTEST_TITLE=SpeedTest | UOB Proof of Concept - Performance
+      - MASTER_SPEEDTEST_TITLE=SpeedTest | UOB High Availability Test
       - START_CONSUMERS=true
       - DISABLE_JOURNAL_FOR_DROP_TABLE=true
       - DISABLE_JOURNAL_FOR_TRUNCATE_TABLE=true
       - INGESTION_THREADS_PER_WORKER=2
       - INGESTION_BATCH_SIZE=1000
-      #- INGESTION_JDBC_URL=jdbc:IRIS://10.0.1.173:51773/IRISCLUSTER
-      - INGESTION_JDBC_URL=jdbc:IRIS://10.0.1.43:51773/IRISCLUSTER
-      #AM- INGESTION_JDBC_URL=jdbc:IRIS://POC-AM-UOB-643700661.ap-southeast-1.elb.amazonaws.com:51773/IRISCLUSTER
+      - INGESTION_RETRY_FIRST=2200
+      - INGESTION_RETRY=300
+      #- INGESTION_JDBC_URL=jdbc:IRIS://172.31.13.38:51773/UOB,jdbc:IRIS://172.31.3.116:51773/UOB
+      - INGESTION_JDBC_URL=jdbc:IRIS://uob-poc-lb-1881789737.ap-southeast-1.elb.amazonaws.com:51773/UOB
       - INGESTION_JDBC_USERNAME=SuperUser
       - INGESTION_JDBC_PASSWORD=sys
-      #- CONSUMER_JDBC_URL=jdbc:IRIS://10.0.1.173:51773/IRISCLUSTER
-      - CONSUMER_JDBC_URL=jdbc:IRIS://10.0.1.43:51773/IRISCLUSTER
-      #AM- CONSUMER_JDBC_URL=jdbc:IRIS://POC-AM-UOB-643700661.ap-southeast-1.elb.amazonaws.com:51773/IRISCLUSTER
+      - CONSUMER_JDBC_URL=jdbc:IRIS://uob-poc-lb-1881789737.ap-southeast-1.elb.amazonaws.com:51773/UOB
+      #- CONSUMER_JDBC_URL=jdbc:IRIS://172.31.13.38:51773/UOB
       - CONSUMER_JDBC_USERNAME=SuperUser
       - CONSUMER_JDBC_PASSWORD=sys
-      - CONSUMER_THREADS_PER_WORKER=4
+      - CONSUMER_THREADS_PER_WORKER=1
       - CONSUMER_TIME_BETWEEN_QUERIES_IN_MILLIS=0
       - DATABASE_SIZE_IN_GB=1
 
-  ingest-worker1:
+  ingest-worker-batch1:
     depends_on: 
-      - htapmaster
-    container_name: ingest-worker1
-    hostname: ingest-worker1
+      - htapmaster-batch
+    container_name: ingest-worker-batch1
+    hostname: ingest-worker-batch1
     init: true
-    image: intersystemsdc/irisdemo-demo-htap-batch:iris-jdbc-ingest-worker-version-2.5.0
+    image: intersystemsdc/irisdemo-demo-htap-batch:iris-jdbc-ingest-worker-version-2.5.2
     ports:
       - "10003:8080" # Where Springboot Will be listening
     environment:
       - MASTER_HOSTNAME=htapmaster
       - MASTER_PORT=8080
 
-  query-worker1:
+
+  query-worker-batch1:
     depends_on: 
-      - htapmaster
-    container_name: query-worker1
-    hostname: query-worker1
+      - htapmaster-batch
+    container_name: query-worker-batch1
+    hostname: query-worker-batch1
     init: true
-    image: intersystemsdc/irisdemo-demo-htap-batch:iris-jdbc-query-worker-version-2.5.0
+    image: intersystemsdc/irisdemo-demo-htap-batch:iris-jdbc-query-worker-version-2.5.2
     ports:
       - "10004:8080" # Where Springboot Will be listening
     environment:
       - MASTER_HOSTNAME=htapmaster
       - MASTER_PORT=8080
   
-  #ingest-worker2:
+  # ingest-worker2:
   #   depends_on: 
   #     - htapmaster
   #   container_name: ingest-worker2
   #   hostname: ingest-worker2
   #   init: true
-  #   image: intersystemsdc/irisdemo-demo-htap:iris-jdbc-ingest-worker-version-2.5.0
+  #   image: intersystemsdc/irisdemo-demo-htap-batch:iris-jdbc-ingest-worker-version-2.5.2
   #   ports:
   #     - "10005:8080" # Where Springboot Will be listening
   #   environment:
@@ -113,7 +114,7 @@ services:
   #   container_name: query-worker2
   #   hostname: query-worker2
   #   init: true
-  #   image: intersystemsdc/irisdemo-demo-htap:iris-jdbc-query-worker-version-2.5.0
+  #   image: intersystemsdc/irisdemo-demo-htap-batch:iris-jdbc-query-worker-version-2.5.2
   #   ports:
   #     - "10006:8080" # Where Springboot Will be listening
   #   environment:
