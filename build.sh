@@ -14,7 +14,7 @@ build_java_project "image-ingest-worker"
 
 build_java_project "image-query-worker"
 
-UI_IMAGE_NAME=intersystemsdc/irisdemo-demo-htap:ui-${DOCKER_TAG}
+UI_IMAGE_NAME=intersystemsdc/irisdemo-demo-htap-batch:ui-${DOCKER_TAG}
 docker build -t $UI_IMAGE_NAME ./image-ui
 echo $UI_IMAGE_NAME >> ./images_built
 # This last image was not built with the function build_java_project(). So we will
