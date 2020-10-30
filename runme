@@ -22,3 +22,5 @@ cp ~/docker-compose.yml.${layer}.$wkrs.BATCH ~/HTAP-Batch/docker-compose.yml
 cd ~/HTAP-Batch
 
 docker-compose up --remove-orphans
+
+docker-compose down
